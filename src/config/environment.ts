@@ -6,6 +6,9 @@ dotenv.config({
 
 export const MYENV = {
   JWT_SCRET: process.env.JWT_SECRET as string,
+  MIDTRANS_IS_PRODUCTION: process.env.MIDTRANS_IS_PRODUCTION,
+  MIDTRANS_SERVER_KEY: process.env.MIDTRANS_SERVER_KEY as string,
+  MIDTRANS_CLIENT_KEY: process.env.MIDTRANS_CLIENT_KEY as string,
 };
 
 // console.log(MYENV);
