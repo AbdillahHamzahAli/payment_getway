@@ -1,13 +1,35 @@
-import * as midtransClient from "midtrans-client";
+import { AxiosRequestConfig } from "axios";
 import { MYENV } from "./environment";
 
-export const snap = new midtransClient.Snap({
-  isProduction: MYENV.MIDTRANS_IS_PRODUCTION,
-  serverKey: MYENV.MIDTRANS_SERVER_KEY,
-  clientKey: MYENV.MIDTRANS_CLIENT_KEY,
-});
-export const coreApi = new midtransClient.CoreApi({
-  isProduction: MYENV.MIDTRANS_IS_PRODUCTION,
-  serverKey: MYENV.MIDTRANS_SERVER_KEY,
-  clientKey: MYENV.MIDTRANS_CLIENT_KEY,
-});
+const key = Buffer.from(MYENV.MIDTRANS_SERVER_KEY).toString("base64");
+
+const options: AxiosRequestConfig = {
+  method: "POST",
+  url: "https://app.sandbox.midtrans.com/snap/v1/transactions",
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    Authorization: `Basic ${key}`,
+  },
+  data: {},
+};
+
+export function createMidtransRequest(
+  transactionId: string,
+  amount: number,
+  userId: string
+) {
+  const data = {
+    transaction_details: {
+      order_id: transactionId,
+      gross_amount: amount,
+    },
+    credit_card: { secure: true },
+    customer_details: {
+      name: userId,
+    },
+  };
+  options.data = data;
+
+  return options;
+}

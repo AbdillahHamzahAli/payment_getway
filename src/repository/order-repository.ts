@@ -28,4 +28,26 @@ export class OrderRepository {
       throw new Error("Error creating order");
     }
   }
+
+  static async findOrder(userId: string): Promise<Order[]> {
+    return await prismaClient.order.findMany({
+      where: {
+        userId,
+      },
+    });
+  }
+
+  static async findOrderById(orderId: string): Promise<Order> {
+    const order = await prismaClient.order.findUnique({
+      where: {
+        id: orderId,
+      },
+    });
+
+    if (!order) {
+      throw new ResponseError(404, "Order not found");
+    }
+
+    return order;
+  }
 }

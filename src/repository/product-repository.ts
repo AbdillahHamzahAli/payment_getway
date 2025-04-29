@@ -1,6 +1,7 @@
 import { Product } from "@prisma/client";
 import { prismaClient } from "../application/database";
 import { CreateProductRequest } from "../model/product-model";
+import { ResponseError } from "../error/response-error";
 
 export class ProductRepository {
   static async createProduct(product: CreateProductRequest): Promise<Product> {
@@ -10,10 +11,15 @@ export class ProductRepository {
     return newProduct;
   }
 
-  static async getProductById(id: string): Promise<Product | null> {
+  static async getProductById(id: string): Promise<Product> {
     const product = await prismaClient.product.findUnique({
       where: { id },
     });
+
+    if (!product) {
+      throw new ResponseError(404, "Product not found");
+    }
+
     return product;
   }
 

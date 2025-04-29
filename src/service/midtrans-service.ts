@@ -1,24 +1,19 @@
-import { snap } from "../config/midtrans";
+import axios from "axios";
+import { createMidtransRequest } from "../config/midtrans";
+import { ResponseError } from "../error/response-error";
 
 export class MidtransService {
   static async createTransaction(
     orderId: string,
     grossAmount: number,
-    email: string
+    userId: string
   ) {
-    const parameter = {
-      transaction_details: {
-        order_id: orderId,
-        gross_amount: grossAmount,
-      },
-      credit_card: {
-        secure: true,
-      },
-      customer_details: {
-        email: email,
-      },
-    };
-    const transaction = await snap.createTransaction(parameter);
-    return transaction;
+    try {
+      const request = createMidtransRequest(orderId, grossAmount, userId);
+      const response = await axios(request);
+      return response.data;
+    } catch (e) {
+      throw new ResponseError(400, "Failed to create transaction");
+    }
   }
 }

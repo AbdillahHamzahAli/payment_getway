@@ -16,4 +16,9 @@ export class OrderService {
 
     return toOrderResponse(order);
   }
+
+  static async findOrder(userId: string): Promise<OrderResponse[]> {
+    const orders = await OrderRepository.findOrder(userId);
+    return orders.map((order) => toOrderResponse(order));
+  }
 }
