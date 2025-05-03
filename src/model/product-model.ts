@@ -6,6 +6,13 @@ export type CreateProductRequest = {
   stock: number;
 };
 
+export type UpdateProductRequest = {
+  id: string;
+  name: string;
+  price: number;
+  stock: number;
+};
+
 export type ProductResponse = {
   id: string;
   name: string;

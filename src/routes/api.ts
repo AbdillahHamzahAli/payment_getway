@@ -9,10 +9,22 @@ export const apiRouter = express.Router();
 
 apiRouter.use(authMiddleware);
 
+// Products
 apiRouter.post(
   "/api/products",
   RoleMiddleware(["ADMIN"]),
   ProductController.createProduct
+);
+apiRouter.put(
+  "/api/products/:id",
+  RoleMiddleware(["ADMIN"]),
+  ProductController.updateProduct
+);
+
+apiRouter.delete(
+  "/api/products/:id",
+  RoleMiddleware(["ADMIN"]),
+  ProductController.deleteProduct
 );
 
 apiRouter.post("/api/orders", OrderController.createOrder);

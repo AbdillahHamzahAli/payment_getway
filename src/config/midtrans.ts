@@ -1,5 +1,7 @@
 import { AxiosRequestConfig } from "axios";
 import { MYENV } from "./environment";
+import { prismaClient } from "../application/database";
+import { ResponseError } from "../error/response-error";
 
 const key = Buffer.from(MYENV.MIDTRANS_SERVER_KEY).toString("base64");
 
@@ -14,11 +16,21 @@ const options: AxiosRequestConfig = {
   data: {},
 };
 
-export function createMidtransRequest(
+export async function createMidtransRequest(
   transactionId: string,
   amount: number,
   userId: string
 ) {
+  const user = await prismaClient.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  if (!user) {
+    throw new ResponseError(404, "User not found");
+  }
+
   const data = {
     transaction_details: {
       order_id: transactionId,
@@ -26,7 +38,7 @@ export function createMidtransRequest(
     },
     credit_card: { secure: true },
     customer_details: {
-      name: userId,
+      email: user.email,
     },
   };
   options.data = data;

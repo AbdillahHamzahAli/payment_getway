@@ -11,4 +11,6 @@ publicRouter.get("/ping", (req, res) => {
 publicRouter.post("/api/user", UserController.register);
 publicRouter.post("/api/user/login", UserController.login);
 
+// Products
 publicRouter.get("/api/products", ProductController.searchProduct);
+publicRouter.get("/api/products/:id", ProductController.getProduct);

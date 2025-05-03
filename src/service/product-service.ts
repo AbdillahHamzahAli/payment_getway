@@ -4,15 +4,14 @@ import {
   ProductResponse,
   SearchProductRequest,
   toProductResponse,
+  UpdateProductRequest,
 } from "../model/product-model";
 import { ProductRepository } from "../repository/product-repository";
 import { ProductValidation } from "../validation/product-validation";
 import { Validation } from "../validation/validation";
 
 export class ProductService {
-  static async createProduct(
-    request: CreateProductRequest
-  ): Promise<ProductResponse> {
+  static async create(request: CreateProductRequest): Promise<ProductResponse> {
     const createRequest = Validation.validate(
       ProductValidation.CREATE,
       request
@@ -23,7 +22,7 @@ export class ProductService {
     return toProductResponse(product);
   }
 
-  static async searchProduct(
+  static async search(
     request: SearchProductRequest
   ): Promise<Pageable<ProductResponse>> {
     const searchRequest = Validation.validate(
@@ -51,5 +50,30 @@ export class ProductService {
         size: searchRequest.size,
       },
     };
+  }
+
+  static async getProductById(id: string): Promise<ProductResponse> {
+    Validation.validate(ProductValidation.GET, { id });
+    const product = await ProductRepository.getProductById(id);
+    return toProductResponse(product);
+  }
+
+  static async update(request: UpdateProductRequest): Promise<ProductResponse> {
+    const updateRequest = Validation.validate(
+      ProductValidation.UPDATE,
+      request
+    );
+
+    const product = await ProductRepository.updateProduct(updateRequest);
+
+    return toProductResponse(product);
+  }
+
+  static async delete(id: string): Promise<void> {
+    const request = Validation.validate(ProductValidation.DELETE, { id });
+
+    await ProductRepository.deleteProduct(request.id);
+
+    return;
   }
 }

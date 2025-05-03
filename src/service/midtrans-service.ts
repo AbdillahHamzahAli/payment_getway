@@ -9,7 +9,7 @@ export class MidtransService {
     userId: string
   ) {
     try {
-      const request = createMidtransRequest(orderId, grossAmount, userId);
+      const request = await createMidtransRequest(orderId, grossAmount, userId);
       const response = await axios(request);
       return response.data;
     } catch (e) {
