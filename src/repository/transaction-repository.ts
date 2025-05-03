@@ -1,4 +1,4 @@
-import { Transaction } from "@prisma/client";
+import { OrderStatus, Transaction, TransactionStatus } from "@prisma/client";
 import { prismaClient } from "../application/database";
 import { CreateTransaction } from "../model/transaction-model";
 
@@ -12,7 +12,7 @@ export class TransactionRespository {
         data: {
           userId: data.userId,
           amount: data.amount,
-          status: "PENDING",
+          status: TransactionStatus.PENDING,
           transactionId: trxId,
         },
       });
@@ -26,7 +26,7 @@ export class TransactionRespository {
         },
         data: {
           transactionId: transaction.id,
-          status: "CHECKOUT",
+          status: OrderStatus.IN_TRASACTION,
         },
       });
 

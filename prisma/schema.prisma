@@ -68,7 +68,7 @@ model Transaction {
   id             String    @id @default(uuid())
   transactionId  String    @unique
   amount         Float
-  status         String
+  status         TransactionStatus
 
   userId         String
   user           User      @relation(fields: [userId], references: [id])
@@ -87,7 +87,7 @@ model Order {
   productName    String
   quantity       Int
   amount         Float
-  status         String
+  status         OrderStatus
 
   userId         String
   user           User      @relation(fields: [userId], references: [id])
@@ -107,4 +107,15 @@ model Order {
 enum Role{
   USER
   ADMIN
+}
+
+enum TransactionStatus{
+  PENDING
+  SUCCESS
+}
+
+enum OrderStatus{
+  IN_CART
+  IN_TRASACTION
+  COMPLETED
 }

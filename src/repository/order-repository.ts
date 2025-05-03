@@ -1,4 +1,4 @@
-import { Order } from "@prisma/client";
+import { Order, OrderStatus } from "@prisma/client";
 import { CreateOrderRequest } from "../model/order-model";
 import { prismaClient } from "../application/database";
 import { ResponseError } from "../error/response-error";
@@ -21,7 +21,7 @@ export class OrderRepository {
           quantity: order.quantity,
           amount: product?.price * order.quantity,
           productName: product?.name,
-          status: "pending",
+          status: OrderStatus.IN_CART,
         },
       });
     } catch (error) {
