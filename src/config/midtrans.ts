@@ -40,6 +40,10 @@ export async function createMidtransRequest(
     customer_details: {
       email: user.email,
     },
+    callbacks: {
+      finish: `${MYENV.BASE_URL}/api/orders/finish`,
+      error: `${MYENV.BASE_URL}/api/orders/err`,
+    },
   };
   options.data = data;
 

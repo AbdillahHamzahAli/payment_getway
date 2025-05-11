@@ -14,20 +14,20 @@ datasource db {
 }
 
 model User {
-  id    String @id @default(uuid())
-  name  String?
-  email String @unique @db.VarChar(100)
-  password String @db.VarChar(100)
+  id              String @id @default(uuid())
+  name            String?
+  email           String @unique @db.VarChar(100)
+  password        String @db.VarChar(100)
 
-  role Role  @default(USER)
+  role            Role  @default(USER)
 
-  addresses Address[]
-  orders Order[]
-  transactions Transaction[]
+  addresses       Address[]
+  orderItems      OrderItems[] 
+  orders          Order[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deletedAt DateTime? @db.Timestamptz(6)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  deletedAt       DateTime? @db.Timestamptz(6)
   @@map("users")
 }
 
@@ -41,7 +41,7 @@ model Address {
   zip       String
   
   userId    String
-  user   User @relation(fields: [userId], references: [id])
+  user      User @relation(fields: [userId], references: [id])
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -56,7 +56,7 @@ model Product {
   price Float
   stock Int
 
-  orders   Order[]
+  orderItems         OrderItems[] 
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -64,30 +64,32 @@ model Product {
   @@map("products")
 }
 
-model Transaction {
+model Order {
   id             String    @id @default(uuid())
   transactionId  String    @unique
   amount         Float
-  status         TransactionStatus
+  status         OrderStatus
 
   userId         String
   user           User      @relation(fields: [userId], references: [id])
 
-  orders         Order[]   @relation("TransactionOrders")  // Relasi 1-N dengan Order
+  orderItems     OrderItems[]   @relation("OrderToItems")
+
+  payment        Payment?
 
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   deletedAt      DateTime? @db.Timestamptz(6)
 
-  @@map("transactions")
+  @@map("orders")
 }
 
-model Order {
+model OrderItems {
   id             String    @id @default(uuid())
   productName    String
   quantity       Int
   amount         Float
-  status         OrderStatus
+  status         OrderItemStatus
 
   userId         String
   user           User      @relation(fields: [userId], references: [id])
@@ -95,13 +97,32 @@ model Order {
   productId      String
   product        Product   @relation(fields: [productId], references: [id])
 
-  transactionId  String?
-  transaction    Transaction? @relation("TransactionOrders", fields: [transactionId], references: [id])  // Relasi ke Transaction bersifat optional
+  orderId        String?
+  order          Order?    @relation("OrderToItems", fields: [orderId], references: [id])
 
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   deletedAt      DateTime? @db.Timestamptz(6)
-  @@map("orders")
+  @@map("order_items")
+}
+
+model Payment {
+  id              String   @id @default(uuid())
+
+  orderId         String   @unique
+  order           Order    @relation(fields: [orderId], references: [id])
+
+  transactionId   String   @unique
+  status          String
+
+  snapToken       String
+  snapRedirectUrl String
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime? @db.Timestamptz(6)
+
+  @@map("payments")
 }
 
 enum Role{
@@ -109,13 +130,16 @@ enum Role{
   ADMIN
 }
 
-enum TransactionStatus{
+enum OrderStatus{
   PENDING
-  SUCCESS
+  PAID
+  CANCELLED
+  EXPIRED
 }
 
-enum OrderStatus{
+enum OrderItemStatus{
   IN_CART
-  IN_TRASACTION
-  COMPLETED
+  PENDING
+  PAID
+  CANCELLED
 }

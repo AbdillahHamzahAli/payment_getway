@@ -1,0 +1,10 @@
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/dt_shop?schema=public"
+JWT_SECRET=""
+TRANSACTION_IDENTITY="TRX"
+BASE_URL="http://localhost:3000"
+
+
+# Midtrans
+MIDTRANS_IS_PRODUCTION=false
+MIDTRANS_SERVER_KEY=""
+MIDTRANS_CLIENT_KEY=""

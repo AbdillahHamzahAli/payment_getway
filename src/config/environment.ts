@@ -5,6 +5,7 @@ dotenv.config({
 });
 
 export const MYENV = {
+  BASE_URL: process.env.BASE_URL as string,
   JWT_SCRET: process.env.JWT_SECRET as string,
   TRX_IDENTITY: process.env.TRANSACTION_IDENTITY as string,
   MIDTRANS_IS_PRODUCTION: process.env.MIDTRANS_IS_PRODUCTION,
